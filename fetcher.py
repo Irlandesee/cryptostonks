@@ -19,7 +19,7 @@ symbol_list_file = "./symbols_list.txt"
 
 def wait(seconds):
 	print("waiting {} seconds".format(seconds))
-	time.spleep(seconds)
+	time.sleep(int(seconds))
 
 def log_toFile(tickername, dataFrame):
 	print("Logging ticker {} to file".format(tickername))
