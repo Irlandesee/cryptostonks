@@ -1,0 +1,4 @@
+bitcoin_eur : BTC-EUR 
+ethereum_eur : ETH-EUR 
+binanceCoin_eur : BNB-EUR 
+polkadot_eur : DOT1-EUR 
