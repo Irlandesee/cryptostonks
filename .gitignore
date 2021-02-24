@@ -1,5 +1,10 @@
 bin
 
+.DS_Store
+cryptostonks.iml
+
+
+
 # Compiled class file
 *.class
 
