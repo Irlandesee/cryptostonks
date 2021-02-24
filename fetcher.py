@@ -23,7 +23,7 @@ def wait(seconds):
 
 def log_toFile(tickername, dataFrame):
 	print("Logging ticker {} to file".format(tickername))
-	filename = tickername + ".txt"
+	filename = tickername + ".csv"
 	dataFrame.to_csv(filename)
 
 def fetch_ticker(period, interval, secs_towait, dictofSymbols = {}):
