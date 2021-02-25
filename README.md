@@ -1,8 +1,43 @@
-# cryptostonks
+ # cryptostonks
 
 #DESCRIPTION:
 
 #NOTES:
+//installing necessary packages for fetcher.py
+import subprocess
+import sys
+
+def install(package):
+	subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+	
+//code examples
+
+/**
+		LocalDateTime now = LocalDateTime.now();
+		System.out.println("Now :"+now);
+		String cryptoName = "BTC-EUR";
+
+
+		Crypto c = new Crypto(cryptoName, now);
+		//System.out.println(c.toString());
+
+		HashMap<LocalDateTime, Crypto> hMap = new HashMap<LocalDateTime, Crypto>();
+		hMap.put(now, c);
+
+		//System.out.println(hMap.toString());
+		Crypto prova = hMap.get(now);
+		System.out.println("Printing prova: ");
+		System.out.println(prova.toString());
+		**/
+
+		/**
+		String time = "2021-01-25 23:00:00";
+
+		LocalDateTime prova = parseTime(time);
+
+		System.out.println("prova: "+prova);
+		**/
 
 #TODO:
 	[fetcher.py]
@@ -41,28 +76,4 @@ tickers = Ticker('fb appl nflx', asynchrounous=True)
 df = tickers.history(period='1mo', interval='1m')
 
 
-		/**
-		LocalDateTime now = LocalDateTime.now();
-		System.out.println("Now :"+now);
-		String cryptoName = "BTC-EUR";
-
-
-		Crypto c = new Crypto(cryptoName, now);
-		//System.out.println(c.toString());
-
-		HashMap<LocalDateTime, Crypto> hMap = new HashMap<LocalDateTime, Crypto>();
-		hMap.put(now, c);
-
-		//System.out.println(hMap.toString());
-		Crypto prova = hMap.get(now);
-		System.out.println("Printing prova: ");
-		System.out.println(prova.toString());
-		**/
-
-		/**
-		String time = "2021-01-25 23:00:00";
-
-		LocalDateTime prova = parseTime(time);
-
-		System.out.println("prova: "+prova);
-		**/
+		

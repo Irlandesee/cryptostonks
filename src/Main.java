@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import crypto.Crypto;
+import analyzer.Analyzer;
 
 public class Main{
 
@@ -17,7 +18,7 @@ public class Main{
 	private static String buildPath(String fileName){
 		if(fileName.equalsIgnoreCase("binancecoin_eur.txt"))
 			return "../historicaldata/binancecoin_eur/binanceCoin_eur.txt";
-		else if(fileName.equalsIgnoreCase("bitcoin_eur.csv"))
+		else if(fileName.equalsIgnoreCase("bitcoin_eur.txt"))
 			return "../historicaldata/bitcoin_eur/bitcoin_eur.txt";
 		else if(fileName.equalsIgnoreCase("ethereum_eur.txt"))
 			return "../historicaldata/ethereum_eur/ethereum_eur.txt";
@@ -33,7 +34,6 @@ public class Main{
 	private static LocalDateTime parseTime(String time){
 		String[] timeSplitted = time.split(" ");
 		String ris = timeSplitted[0]+"T"+timeSplitted[1];
-		System.out.println(ris);
 		return LocalDateTime.parse(ris);
 	}
 
@@ -46,20 +46,16 @@ public class Main{
 			String sletta;
 			String[] sSplittata; //lunghezza di una riga splittata
 			while((sletta = buf.readLine()) != null){
-				if(sletta.equalsIgnoreCase(fileheaders))//delete this
-					continue;
-				else{
-					sSplittata = splitString(sletta);
-					String cryptoName = sSplittata[0];
-					String timeString = sSplittata[1];
-					LocalDateTime time = parseTime(timeString);
+				sSplittata = splitString(sletta);
+				String cryptoName = sSplittata[0];
+				String timeString = sSplittata[1];
+				LocalDateTime time = parseTime(timeString);
 
-					c = new Crypto(cryptoName, time);
-					c.setParameters(sSplittata[2], sSplittata[3], sSplittata[4],
-							sSplittata[5], sSplittata[6]);
+				c = new Crypto(cryptoName, time);
+				c.setParameters(sSplittata[2], sSplittata[3], sSplittata[4],
+						sSplittata[5], sSplittata[6]);
 
-					ris.put(time, c);
-				}
+				ris.put(time, c);
 			}
 
 			buf.close();
@@ -80,20 +76,15 @@ public class Main{
 			String sletta;
 			String[] sSplittata;
 			while((sletta = buf.readLine()) != null){
-				if(sletta.equalsIgnoreCase(fileheaders)) //delete this
-					continue;
-				else{
-					sSplittata = splitString(sletta);
-					String cryptoName = sSplittata[0];
-					String timeString = sSplittata[1];
-					LocalDateTime time = parseTime(timeString);
+				sSplittata = splitString(sletta);
+				String cryptoName = sSplittata[0];
+				String timeString = sSplittata[1];
+				LocalDateTime time = parseTime(timeString);
+				c = new Crypto(cryptoName, time);
+				c.setParameters(sSplittata[2], sSplittata[3], sSplittata[4],
+						sSplittata[5], sSplittata[6]);
 
-					c = new Crypto(cryptoName, time);
-					c.setParameters(sSplittata[2], sSplittata[3], sSplittata[4],
-							sSplittata[5], sSplittata[6]);
-
-					ris.put(time, c);
-				}
+				ris.put(time, c);
 			}
 			buf.close();
 		}catch(IOException e){
@@ -121,7 +112,7 @@ public class Main{
 				}catch(NullPointerException e){
 					e.printStackTrace();
 				}
-
+				/*
 				Iterator it = prova.entrySet().iterator();
 				while(it.hasNext()) {
 
@@ -132,7 +123,19 @@ public class Main{
 							+ " [LOW] : " + c.getLow() + " [VOLUME] : " + c.getVolume());
 
 					it.remove();
-				}
+				}*/
+				LocalDateTime start = LocalDateTime.parse("2021-01-25T23:00:00");
+				LocalDateTime end = LocalDateTime.parse("2021-01-26T23:00:00");
+				Analyzer a = new Analyzer(prova);
+				double movingAverage = a.movingAverage(start, end);
+				double weightedMovingAverage = a.weightedMovingAverage(start, end);
+				double exponentialMovingAverage = a.exponentialMovingAverage(start, end);
+
+				System.out.println("START: "+start.toString() + " END: "+end.toString());
+				System.out.println("[MA] : "+movingAverage);
+				System.out.println("[WMA] : "+weightedMovingAverage);
+				System.out.println("[EXPMA] : "+exponentialMovingAverage);
+
 			}
 			else{
 				System.out.println("Could not locate the file");

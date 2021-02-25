@@ -1,0 +1,185 @@
+package analyzer;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Iterator;
+import crypto.Crypto;
+
+public class Analyzer {
+
+    private LinkedHashMap<LocalDateTime, Crypto> historicalData;
+    //private HashMap<LocalDateTime, Crypto> datiStorici;
+
+    public Analyzer(LinkedHashMap<LocalDateTime, Crypto> historicalData){
+        this.historicalData = historicalData;
+    }
+
+    public LinkedHashMap<LocalDateTime, Crypto> getHistoricalData(){
+        return this.historicalData;
+    }
+
+    public void setHistoricalData(LinkedHashMap<LocalDateTime, Crypto> historicalData){
+        this.historicalData = historicalData;
+    }
+
+    public boolean isNewDay(LocalDateTime x, LocalDateTime y){
+        LocalDate tmp = x.toLocalDate();
+        LocalDate temp = x.toLocalDate();
+
+        if(tmp.isEqual(temp))
+            return false;
+        else if(temp.isAfter(tmp))
+            return true;
+        return false;
+    }
+
+    /**
+     * Stupid method to get fast a period
+     * @param start
+     * @param end
+     * @return
+     */
+    public int getPeriod(LocalDateTime start, LocalDateTime end){
+        String[] s = start.toString().split("T");
+        String[] e = start.toString().split("T");
+        String startDay = s[0];
+        String endDay = e[0];
+        String[] tmpStartDay = startDay.split("-");
+        String[] tmpEndDay = endDay.split("-");
+
+        int x = Integer.parseInt(tmpStartDay[2]);
+        int y = Integer.parseInt(tmpEndDay[2]);
+        System.out.println(x + " " + y);
+        return y-x;
+    }
+
+    /**
+     * Return the crypto object if it exists in the map
+     * else it returns null
+     * @param dayTime
+     * @return
+     */
+    public Crypto getCryptoAt(LocalDateTime dayTime){
+        if(historicalData.containsKey(dayTime))
+            return historicalData.get(dayTime);
+        else
+            return null;
+    }
+
+    /**
+     * Copies values from historicalData into a new lHashMap
+     * in the range (start, end)
+     * @param start
+     * @param end
+     * @return
+     */
+    public LinkedHashMap<LocalDateTime, Crypto> getCryptoFromTo(LocalDateTime start, LocalDateTime end){
+        LinkedHashMap<LocalDateTime, Crypto> ris = new LinkedHashMap<LocalDateTime, Crypto>();
+        Iterator it = historicalData.entrySet().iterator();
+
+        while(it.hasNext()){
+            HashMap.Entry pair = (HashMap.Entry) it.next();
+            LocalDateTime tmp = (LocalDateTime) pair.getKey();
+            if(tmp.isEqual(start) || tmp.isEqual(end))
+                ris.put((LocalDateTime) pair.getKey(), (Crypto) pair.getValue());
+            else if(tmp.isAfter(start) && tmp.isBefore(end))
+                ris.put((LocalDateTime) pair.getKey(), (Crypto) pair.getValue());
+        }
+        //9976484
+        return ris;
+    }
+
+    /**
+     * Simple Arithmetic Mean
+     * @return
+     */
+    public double movingAverage( LocalDateTime start, LocalDateTime end){
+        LinkedHashMap<LocalDateTime, Crypto> data = getCryptoFromTo(start, end);
+        int period =  getPeriod(start, end);
+        Iterator it = data.entrySet().iterator();
+        Crypto c;
+        double movingAverage = 0;
+
+        while(it.hasNext()){
+            HashMap.Entry pair = (HashMap.Entry) it.next();
+            c = (Crypto) pair.getValue();
+            movingAverage += c.getClose();
+            movingAverage /= period;
+            System.out.println(c.getDateTime().toString() + " : [MA] ->" + movingAverage);
+        }
+
+        return (double) movingAverage;
+    }
+
+    /**
+     * Simple Arithmetic mean, but every day has a different weight
+     * Days in far past have less weight than days in the recent past
+     * @return
+     */
+    public double weightedMovingAverage(LocalDateTime start, LocalDateTime end){
+        LinkedHashMap<LocalDateTime, Crypto> data = getCryptoFromTo(start, end);
+
+        Iterator it = data.entrySet().iterator();
+
+        Crypto c;
+        double weightedMovingAverage = 0;
+        double sommaPrezziPerPeso = 0;
+        int weight = 0;
+
+        while(it.hasNext()){
+            HashMap.Entry pair = (HashMap.Entry) it.next();
+            c = (Crypto) pair.getValue();
+            weight =+ 1;
+            sommaPrezziPerPeso += c.getClose() * weight;
+
+        }
+        weightedMovingAverage = sommaPrezziPerPeso / weight;
+        System.out.println("[WMA] ->" + weightedMovingAverage);
+        return (double) weightedMovingAverage;
+    }
+
+    public double getMultiplier(int numberOfObservations){
+        return (double)2/(numberOfObservations + 1);
+    }
+
+    /**
+     *
+     * @param start
+     * @param end
+     * @return
+     */
+    public double exponentialMovingAverage(LocalDateTime start, LocalDateTime end){
+        //formula: EMA = Closing price x multiplier + EMA (previous day) x (1-multiplier)
+        //determine the SMA for the period
+        //calculate multiplier = 2 / (number of period + 1)
+        //closing_price * multiplier + EMA_previousDay * (1-multiplier)
+
+        LinkedHashMap<LocalDateTime, Crypto> data = getCryptoFromTo(start, end);
+        Iterator it = data.entrySet().iterator();
+
+        Crypto c;
+
+        double exponentialMovingAverage_yesterday = 0, exponentialMovingAverage_today = 0;
+
+        double closingPrice = 0;
+        double multiplier = 0;
+        int period = 0;
+        while(it.hasNext()){
+            HashMap.Entry pair = (HashMap.Entry) it.next();
+            c = (Crypto) pair.getValue();
+            closingPrice = c.getClose();
+            period += 1;
+
+            multiplier = getMultiplier(period);
+
+            exponentialMovingAverage_today = closingPrice * multiplier
+                    + exponentialMovingAverage_yesterday + (1 - multiplier);
+            System.out.println(c.getDateTime().toString() + " : [EXPMA] -> " +exponentialMovingAverage_today);
+        }
+
+        return exponentialMovingAverage_today;
+    }
+
+}
