@@ -22,6 +22,11 @@ public class Analyzer {
 
     public void setHistoricalData(LinkedHashMap<LocalDateTime, Crypto> historicalData){
         this.historicalData = historicalData;
+    };
+
+    public double calcPercentage(double a, double b){
+        double ris = a * b;
+        return ris/100;
     }
 
     public boolean isNewDay(LocalDateTime x, LocalDateTime y){
@@ -37,22 +42,10 @@ public class Analyzer {
 
     /**
      * Stupid method to get fast a period
-     * @param start
-     * @param end
      * @return
      */
-    public int getPeriod(LocalDateTime start, LocalDateTime end){
-        String[] s = start.toString().split("T");
-        String[] e = start.toString().split("T");
-        String startDay = s[0];
-        String endDay = e[0];
-        String[] tmpStartDay = startDay.split("-");
-        String[] tmpEndDay = endDay.split("-");
-
-        int x = Integer.parseInt(tmpStartDay[2]);
-        int y = Integer.parseInt(tmpEndDay[2]);
-        System.out.println(x + " " + y);
-        return y-x;
+    public int getPeriod(LinkedHashMap<LocalDateTime, Crypto> m){
+        return m.size();
     }
 
     /**
@@ -87,7 +80,6 @@ public class Analyzer {
             else if(tmp.isAfter(start) && tmp.isBefore(end))
                 ris.put((LocalDateTime) pair.getKey(), (Crypto) pair.getValue());
         }
-        //9976484
         return ris;
     }
 
@@ -95,9 +87,9 @@ public class Analyzer {
      * Simple Arithmetic Mean
      * @return
      */
-    public double movingAverage( LocalDateTime start, LocalDateTime end){
+    public double movingAverage(LocalDateTime start, LocalDateTime end){
         LinkedHashMap<LocalDateTime, Crypto> data = getCryptoFromTo(start, end);
-        int period =  getPeriod(start, end);
+        int period =  getPeriod(data);
         Iterator it = data.entrySet().iterator();
         Crypto c;
         double movingAverage = 0;
@@ -106,11 +98,10 @@ public class Analyzer {
             HashMap.Entry pair = (HashMap.Entry) it.next();
             c = (Crypto) pair.getValue();
             movingAverage += c.getClose();
-            movingAverage /= period;
-            System.out.println(c.getDateTime().toString() + " : [MA] ->" + movingAverage);
+            System.out.println(c.getDateTime().toString() + " : [MA] -> " + movingAverage/period);
         }
 
-        return (double) movingAverage;
+        return (double) movingAverage / period;
     }
 
     /**
@@ -125,18 +116,18 @@ public class Analyzer {
 
         Crypto c;
         double weightedMovingAverage = 0;
-        double sommaPrezziPerPeso = 0;
-        int weight = 0;
+        double weight = 0;
+        int period = getPeriod(data);
+        System.out.println(period);
 
         while(it.hasNext()){
             HashMap.Entry pair = (HashMap.Entry) it.next();
             c = (Crypto) pair.getValue();
-            weight =+ 1;
-            sommaPrezziPerPeso += c.getClose() * weight;
-
+            weight += 1 / period;
+            weightedMovingAverage += c.getClose() * weight;
+            //System.out.println(c.getDateTime().toString() + " [WMA] ->" + weightedMovingAverage);
         }
-        weightedMovingAverage = sommaPrezziPerPeso / weight;
-        System.out.println("[WMA] ->" + weightedMovingAverage);
+
         return (double) weightedMovingAverage;
     }
 

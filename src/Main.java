@@ -24,6 +24,8 @@ public class Main{
 			return "../historicaldata/ethereum_eur/ethereum_eur.txt";
 		else if(fileName.equalsIgnoreCase("polkadot_eur.txt"))
 			return "../historicaldata/polkadot_eur/polkadot_eur.txt";
+		else if(fileName.equalsIgnoreCase("cardano_usd.csv"))
+			return "../historicaldata/cardano/cardano_usd.csv";
 		return error_pathname;
 	}
 
@@ -124,16 +126,16 @@ public class Main{
 
 					it.remove();
 				}*/
-				LocalDateTime start = LocalDateTime.parse("2021-01-25T23:00:00");
-				LocalDateTime end = LocalDateTime.parse("2021-01-26T23:00:00");
+				LocalDateTime start = LocalDateTime.parse("2021-01-26T10:00:00");
+				LocalDateTime end = LocalDateTime.parse("2021-02-26T10:22:10");
 				Analyzer a = new Analyzer(prova);
 				double movingAverage = a.movingAverage(start, end);
-				double weightedMovingAverage = a.weightedMovingAverage(start, end);
+				//double weightedMovingAverage = a.weightedMovingAverage(start, end);
 				double exponentialMovingAverage = a.exponentialMovingAverage(start, end);
 
 				System.out.println("START: "+start.toString() + " END: "+end.toString());
 				System.out.println("[MA] : "+movingAverage);
-				System.out.println("[WMA] : "+weightedMovingAverage);
+				//System.out.println("[WMA] : "+weightedMovingAverage); //media mobile pesatea non funziona
 				System.out.println("[EXPMA] : "+exponentialMovingAverage);
 
 			}

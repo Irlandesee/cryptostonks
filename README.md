@@ -39,6 +39,9 @@ def install(package):
 		System.out.println("prova: "+prova);
 		**/
 
+23,6%, 38,2%, 50%, 61,8%, 76.4%, 100%
+
+
 #TODO:
 	[fetcher.py]
 	1. Aggiornare la cartella di scrittura in maniera tale che corrisponda alla propria cartella. Il nome 
@@ -65,6 +68,7 @@ def install(package):
 
 
 #PROBLEMS:
+weightedMovingAverage does not work
 
 #Warning
 The yahoo finance api restricts the amount of one minute interval data to seven days per request
