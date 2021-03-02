@@ -3,6 +3,13 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
+        <entry key="/historicaldata/bitcoin_eur/bitcoin_eur.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/historicaldata/bitcoin_eur/bitcoin_eur.txt">
           <value>
             <Attribute>

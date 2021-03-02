@@ -4,7 +4,7 @@ import csv
 import sys
 import argparse
 import requests
-
+import os
 from yahooquery import Ticker
 
 
@@ -16,15 +16,26 @@ interval = ['1m', '2m', '5m', '15m', '30m', '60m', '90m', '1h', '1d', '5d', '1wk
 yahoo_url = "https://it.finance.yahoo.com/quote/"
 
 symbol_list_file = "./symbols_list.txt"
+storagePath = "./historicaldata/"
+dirnames = ["binancecoin_eur", "bitcoin_eur", "cardano", "ethereum_eur", "polkadot_eur"]
+
+def get_os_separator():
+	return os.path.sep
 
 def wait(seconds):
 	print("waiting {} seconds".format(seconds))
 	time.sleep(int(seconds))
 
 def log_toFile(tickername, dataFrame):
-	print("Logging ticker {} to file".format(tickername))
 	filename = tickername + ".csv"
-	dataFrame.to_csv(filename)
+	fullpath = ""
+	separator = get_os_separator()
+	for name in dirnames:
+		if name == tickername:
+			fullpath = "{}{}{}{}".format(storagePath, name, separator, filename)
+
+	print("Logging ticker {} to file in: {}".format(tickername, fullpath))
+	dataFrame.to_csv(fullpath)
 
 def fetch_ticker(period, interval, secs_towait, dictofSymbols = {}):
 	for symbol in dictofSymbols:

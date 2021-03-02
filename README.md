@@ -10,6 +10,14 @@ import sys
 def install(package):
 	subprocess.check_call([sys.executable, "-m", "pip", "install", package])
 
+//moving averages
+ma 20 close -> short term trends
+ma 50 close	-> medium term trends
+ma 200 close -> long term trends
+
+watch out for consolidation
+
+
 	
 //code examples
 

@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
 
 import java.util.Iterator;
@@ -14,18 +15,20 @@ import analyzer.Analyzer;
 public class Main{
 
 	private static final String error_pathname = "Could not build pathname";
-	private static final String fileheaders = "symbol,date,high,open,volume,low,close";
+	private static final String fileheaders = "symbol,date,close,high,low,open,volume";
+	private static final String systemSeparator = File.separator;
+
 	private static String buildPath(String fileName){
-		if(fileName.equalsIgnoreCase("binancecoin_eur.txt"))
-			return "../historicaldata/binancecoin_eur/binanceCoin_eur.txt";
-		else if(fileName.equalsIgnoreCase("bitcoin_eur.txt"))
-			return "../historicaldata/bitcoin_eur/bitcoin_eur.txt";
-		else if(fileName.equalsIgnoreCase("ethereum_eur.txt"))
-			return "../historicaldata/ethereum_eur/ethereum_eur.txt";
-		else if(fileName.equalsIgnoreCase("polkadot_eur.txt"))
-			return "../historicaldata/polkadot_eur/polkadot_eur.txt";
-		else if(fileName.equalsIgnoreCase("cardano_usd.csv"))
-			return "../historicaldata/cardano/cardano_usd.csv";
+		if(fileName.equalsIgnoreCase("binancecoin_eur"))
+			return ".."+systemSeparator+"historicaldata"+systemSeparator+"binancecoin_eur"+systemSeparator+"binanceCoin_eur.csv";
+		else if(fileName.equalsIgnoreCase("bitcoin_eur"))
+			return ".."+systemSeparator+"historicaldata"+systemSeparator+"bitcoin_eur"+systemSeparator+"bitcoin_eur.csv";
+		else if(fileName.equalsIgnoreCase("ethereum_eur"))
+			return ".."+systemSeparator+"historicaldata"+systemSeparator+"ethereum_eur"+systemSeparator+"ethereum_eur.csv";
+		else if(fileName.equalsIgnoreCase("polkadot_eur"))
+			return ".."+systemSeparator+"historicaldata"+systemSeparator+"polkadot_eur"+systemSeparator+"polkadot_eur.csv";
+		else if(fileName.equalsIgnoreCase("cardano_usd"))
+			return ".."+systemSeparator+"historicaldata"+systemSeparator+"cardano"+systemSeparator+"cardano_usd.csv";
 		return error_pathname;
 	}
 
@@ -39,6 +42,38 @@ public class Main{
 		return LocalDateTime.parse(ris);
 	}
 
+	/**
+	 * Reads the first line from the file, and preps it to be read.
+	 * needs to be tested
+	 * @param f
+	 */
+	private static void prepareFileForReading(File f){
+		System.out.println("preparing "+f.getName()+" for reading.");
+		try{
+			BufferedReader br = new BufferedReader(new FileReader(f));
+			String line;
+			StringBuffer buf = new StringBuffer();
+			while((line = br.readLine()) != null){
+				if(line.equals(fileheaders)){
+					line = "";
+					buf.append(line);
+					buf.append("\n");
+				}
+				else{
+					buf.append(line);
+					buf.append("\n");
+				}
+			}
+			br.close();
+			FileOutputStream outFile = new FileOutputStream(f);
+			outFile.write(buf.toString().getBytes());
+			outFile.close();
+
+		}catch(IOException e){
+			e.printStackTrace();
+		}
+	}
+
 	private static HashMap<LocalDateTime, Crypto> readData_hashmap(File f){
 		System.out.println("Started reading from file: "+f.getName());
 		HashMap<LocalDateTime, Crypto> ris = new HashMap<LocalDateTime, Crypto>();
@@ -48,16 +83,21 @@ public class Main{
 			String sletta;
 			String[] sSplittata; //lunghezza di una riga splittata
 			while((sletta = buf.readLine()) != null){
-				sSplittata = splitString(sletta);
-				String cryptoName = sSplittata[0];
-				String timeString = sSplittata[1];
-				LocalDateTime time = parseTime(timeString);
+				System.out.println(sletta);
+				if(!(sletta.equals("") || sletta.equals("\n"))){
+					sSplittata = splitString(sletta);
+					String cryptoName = sSplittata[0];
+					String timeString = sSplittata[1];
+					LocalDateTime time = parseTime(timeString);
 
-				c = new Crypto(cryptoName, time);
-				c.setParameters(sSplittata[2], sSplittata[3], sSplittata[4],
-						sSplittata[5], sSplittata[6]);
+					c = new Crypto(cryptoName, time);
+					c.setParameters(sSplittata[2], sSplittata[3], sSplittata[4],
+							sSplittata[5], sSplittata[6]);
 
-				ris.put(time, c);
+					ris.put(time, c);
+				}
+				else
+					continue;
 			}
 
 			buf.close();
@@ -78,15 +118,19 @@ public class Main{
 			String sletta;
 			String[] sSplittata;
 			while((sletta = buf.readLine()) != null){
-				sSplittata = splitString(sletta);
-				String cryptoName = sSplittata[0];
-				String timeString = sSplittata[1];
-				LocalDateTime time = parseTime(timeString);
-				c = new Crypto(cryptoName, time);
-				c.setParameters(sSplittata[2], sSplittata[3], sSplittata[4],
-						sSplittata[5], sSplittata[6]);
+				if(!(sletta.equals(""))){
+					sSplittata = splitString(sletta);
+					String cryptoName = sSplittata[0];
+					String timeString = sSplittata[1];
+					LocalDateTime time = parseTime(timeString);
+					c = new Crypto(cryptoName, time);
+					c.setParameters(sSplittata[2], sSplittata[3], sSplittata[4],
+							sSplittata[5], sSplittata[6]);
 
-				ris.put(time, c);
+					ris.put(time, c);
+				}
+				else
+					continue;
 			}
 			buf.close();
 		}catch(IOException e){
@@ -103,31 +147,21 @@ public class Main{
 		else{
 			String fileName = args[0];
 			String completePath = buildPath(fileName);
+			System.out.println(completePath);
 			//HashMap<LocalDateTime, Crypto> prova = new HashMap<LocalDateTime, Crypto>();
 			LinkedHashMap<LocalDateTime, Crypto> prova = new LinkedHashMap<LocalDateTime, Crypto>();
 
 			if(!(completePath.equals(error_pathname))){
 				try{
 					File dataFile = new File(completePath);
+					prepareFileForReading(dataFile);
 					prova = readData_lhashmap(dataFile);
 
 				}catch(NullPointerException e){
 					e.printStackTrace();
 				}
-				/*
-				Iterator it = prova.entrySet().iterator();
-				while(it.hasNext()) {
-
-					HashMap.Entry pair = (HashMap.Entry) it.next();
-					Crypto c = (Crypto) pair.getValue();
-					System.out.println("[DATETIME] " + pair.getKey() + " : "
-							+ " [SYMBOL] " + c.getSymbolName() + " [HIGH] : " + c.getHigh()
-							+ " [LOW] : " + c.getLow() + " [VOLUME] : " + c.getVolume());
-
-					it.remove();
-				}*/
-				LocalDateTime start = LocalDateTime.parse("2021-01-26T10:00:00");
-				LocalDateTime end = LocalDateTime.parse("2021-02-26T10:22:10");
+				LocalDateTime start = LocalDateTime.parse("2021-01-31T23:00:00");
+				LocalDateTime end = LocalDateTime.parse("2021-02-28T22:59:00");
 				Analyzer a = new Analyzer(prova);
 				double movingAverage = a.movingAverage(start, end);
 				//double weightedMovingAverage = a.weightedMovingAverage(start, end);
@@ -135,7 +169,7 @@ public class Main{
 
 				System.out.println("START: "+start.toString() + " END: "+end.toString());
 				System.out.println("[MA] : "+movingAverage);
-				//System.out.println("[WMA] : "+weightedMovingAverage); //media mobile pesatea non funziona
+				//System.out.println("[WMA] : "+weightedMovingAverage); //media mobile pesata non funziona
 				System.out.println("[EXPMA] : "+exponentialMovingAverage);
 
 			}

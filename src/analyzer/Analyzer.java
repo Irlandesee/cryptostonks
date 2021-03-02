@@ -98,7 +98,7 @@ public class Analyzer {
             HashMap.Entry pair = (HashMap.Entry) it.next();
             c = (Crypto) pair.getValue();
             movingAverage += c.getClose();
-            System.out.println(c.getDateTime().toString() + " : [MA] -> " + movingAverage/period);
+            //System.out.println(c.getDateTime().toString() + " : [MA] -> " + movingAverage/period);
         }
 
         return (double) movingAverage / period;
@@ -167,7 +167,7 @@ public class Analyzer {
 
             exponentialMovingAverage_today = closingPrice * multiplier
                     + exponentialMovingAverage_yesterday + (1 - multiplier);
-            System.out.println(c.getDateTime().toString() + " : [EXPMA] -> " +exponentialMovingAverage_today);
+            //System.out.println(c.getDateTime().toString() + " : [EXPMA] -> " +exponentialMovingAverage_today);
         }
 
         return exponentialMovingAverage_today;
