@@ -20,14 +20,14 @@ public class Command{
     private LinkedList<String> commands;
     private Dialog in;
     private String commandError = "Command not found";
-
+    private LocalDateTime start = LocalDateTime.MAX, end = LocalDateTime.MAX;
 
     public Command(String command, Analyzer a, LinkedList<String> commands, Dialog in){
         this.command = command;
         this.a = a;
         this.commands = commands;
-        f = new Fibonacci();
         this.in = in;
+        f = new Fibonacci();
     }
 
     public double executeCommand(){
@@ -35,22 +35,40 @@ public class Command{
             switch(command.toLowerCase()){
                 case "ma":
                     System.out.println("{CALCULATING MA}");
-
-                    double ma = a.movingAverage();
+                    System.out.print("Inserisci data e ora di inizio.");
+                    start = in.getTime();
+                    System.out.print("Inserisci data e ora di fine.");
+                    end = in.getTime();
+                    double ma = a.movingAverage(start, end);
                     break;
                 case "exma":
                     System.out.println("{CALCULATING EXMA}");
-                    double exma = a.exponentialMovingAverage();
+                    System.out.print("Inserisci data e ora di inizio.");
+                    start = in.getTime();
+                    System.out.print("Inserisci data e ora di fine.");
+                    end = in.getTime();
+                    double exma = a.exponentialMovingAverage(start, end);
                     break;
                 case "trova fibonacci":
                     System.out.println("{FINDING FIBONACCI ZONES}");
+                    System.out.print("Inserisci data e ora di inizio.");
+                    start = in.getTime();
+                    System.out.print("Inserisci data e ora di fine.");
+                    end = in.getTime();
                     break;
                 case "visualizza dati":
                     System.out.println("{PRINTING HISTORICAL DATA}");
-
+                    System.out.print("Inserisci data e ora di inizio.");
+                    start = in.getTime();
+                    System.out.print("Inserisci data e ora di fine.");
+                    end = in.getTime();
                     break;
                 case "scarica dati":
                     System.out.println("{DOWNLOADING DATA}");
+                    System.out.print("Inserisci data e ora di inizio.");
+                    start = in.getTime();
+                    System.out.print("Inserisci data e ora di fine.");
+                    end = in.getTime();
                     break;
                 case "quit":
                     System.out.println("{EXITING}");

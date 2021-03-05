@@ -52,8 +52,10 @@ public class Dialog {
         String command = "";
         while((command = in.nextLine()).equals("quit")){
             for(int i = 0; i < commands.length; i++){
-                if(command.equals(commands[i]))
-                    executeCommand(command);
+                if(command.equals(commands[i])){
+                    Command c = new Command(command, a, availableCommands, this);
+                    c.executeCommand();
+                }
                 else{
                     System.out.println("Comando non valido");
                     System.out.print(readyString);
@@ -70,7 +72,7 @@ public class Dialog {
         return LocalDateTime.parse(ris);
     }
 
-    private LocalDateTime getTime(){
+    public LocalDateTime getTime(){
         Scanner in = new Scanner(System.in);
         String line = "";
         LocalDateTime res = LocalDateTime.MAX;
