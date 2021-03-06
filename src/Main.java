@@ -160,17 +160,6 @@ public class Main{
 				}catch(NullPointerException e){
 					e.printStackTrace();
 				}
-				LocalDateTime start = LocalDateTime.parse("2021-01-31T23:00:00");
-				LocalDateTime end = LocalDateTime.parse("2021-02-28T22:59:00");
-				Analyzer a = new Analyzer(prova);
-				double movingAverage = a.movingAverage(start, end);
-				//double weightedMovingAverage = a.weightedMovingAverage(start, end);
-				double exponentialMovingAverage = a.exponentialMovingAverage(start, end);
-
-				System.out.println("START: "+start.toString() + " END: "+end.toString());
-				System.out.println("[MA] : "+movingAverage);
-				//System.out.println("[WMA] : "+weightedMovingAverage); //media mobile pesata non funziona
-				System.out.println("[EXPMA] : "+exponentialMovingAverage);
 
 			}
 			else{

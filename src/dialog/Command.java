@@ -70,6 +70,10 @@ public class Command{
                     System.out.print("Inserisci data e ora di fine.");
                     end = in.getTime();
                     break;
+                case "insert interval":
+                    System.out.println("");
+
+                    break;
                 case "quit":
                     System.out.println("{EXITING}");
                     System.exit(0);

@@ -23,7 +23,16 @@ public class Dialog {
     private final String readyString = ">>>";
 
     private LinkedList<String> availableCommands;
-    private String[] commands = {"ma", "exma", "trova fibonacci", "visualizza dati", "scarica dati", "quit"};
+    private String[] commands = {"ma", "exma", "trova fibonacci", "visualizza dati", "scarica dati", "insert interval", "quit"};
+
+    public Dialog(){
+        System.out.println("CryptoStonks Dialog");
+        System.out.println("Analyzer needs to be set up");
+        availableCommands = new LinkedList<String>();
+        this.setUpCommands();
+
+        printFunctions();
+    }
 
     public Dialog(Analyzer a){
         System.out.println("CryptoStonks Dialog");
@@ -31,9 +40,15 @@ public class Dialog {
         availableCommands = new LinkedList<String>();
     }
 
+    public void setUpAnalyzer(LinkedHashMap<LocalDateTime, Crypto> map){
+        this.a = new Analyzer(map);
+        System.out.println("Analyzer has been set up");
+    }
+
     private void setUpCommands(){
         for(String x : commands)
             availableCommands.add(x);
+        System.out.println("Commands have been set up");
     }
 
     public void printFunctions(){
@@ -43,14 +58,15 @@ public class Dialog {
         System.out.println("---3. Trova sezioni di fibonacci: " +intervalliSuggeriti);
         System.out.println("---4. Visualizza dati storici ");
         System.out.println("---5. Scarica nuovi dati storici: ");
-        System.out.println("---6. quit");
+        System.out.println("---6. Inserisci Intervallo");
+        System.out.println("---7. quit");
     }
 
     public void inputFunctions(){
         Scanner in = new Scanner(System.in);
         System.out.print(readyString);
         String command = "";
-        while((command = in.nextLine()).equals("quit")){
+        while(!(command = in.nextLine()).equals("quit")){
             for(int i = 0; i < commands.length; i++){
                 if(command.equals(commands[i])){
                     Command c = new Command(command, a, availableCommands, this);
