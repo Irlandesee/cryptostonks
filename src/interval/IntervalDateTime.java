@@ -33,7 +33,6 @@ public class IntervalDateTime extends Interval{
 
     /**
      * @param otherInterval
-     * @return
      * @return 0 if they are equal
      * 1 if this is after otherinterval
      *-1 if this is before otherinterval
