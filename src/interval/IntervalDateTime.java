@@ -21,12 +21,22 @@ public class IntervalDateTime extends Interval{
         return this.startOfInterval;
     }
 
+    public void setStartOfInterval(Interval startOfInterval){
+        if(startOfInterval instanceof IntervalDateTime)
+            this.startOfInterval = (LocalDateTime) startOfInterval.getStartOfInterval();
+    }
+
     public String getIntervalStartString(){
         return startOfInterval.toString();
     }
 
     public LocalDateTime getEnd(){
         return this.endOfInterval;
+    }
+
+    public void setEndOfInterval(Interval endOfInterval){
+        if(endOfInterval instanceof IntervalDateTime)
+            this.endOfInterval = (LocalDateTime) endOfInterval.getEndOfInterval();
     }
 
     public String getIntervalEndString(){return this.endOfInterval.toString();}

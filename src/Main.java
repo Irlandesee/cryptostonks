@@ -11,6 +11,11 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import crypto.Crypto;
 import analyzer.Analyzer;
+import dialog.Command;
+import dialog.Dialog;
+import interval.Interval;
+import interval.IntervalDate;
+import interval.IntervalDateTime;
 
 public class Main{
 
@@ -141,7 +146,7 @@ public class Main{
 	}
 
 	public static void main(String[] args){
-
+		/*
 		if(args.length < 1)
 			System.out.println("Inserisci input file");
 		else{
@@ -166,6 +171,16 @@ public class Main{
 				System.out.println("Could not locate the file");
 			}
 		}
+		*/
+
+		IntervalDateTime intTmp = new IntervalDateTime();
+		IntervalDateTime intTemp = new IntervalDateTime();
+
+		LocalDateTime start = LocalDateTime.parse("2021-01-31T23:00:00");
+		LocalDateTime end = LocalDateTime.parse("2021-01-31T23:20:00");
+		
+
+
 
 	}
 

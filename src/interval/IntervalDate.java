@@ -2,7 +2,6 @@ package interval;
 
 import java.time.LocalDate;
 import java.time.chrono.ChronoLocalDate;
-import java.time.chrono.ChronoLocalDateTime;
 
 
 public class IntervalDate extends Interval{
